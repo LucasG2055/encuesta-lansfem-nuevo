@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import SimpleForm from '../components/SimpleForm';
 
 export default function Home() {
   return (
@@ -19,9 +20,8 @@ export default function Home() {
           </p>
         </div>
         
-        {/* Aquí irá el formulario en el siguiente paso */}
         <div className="p-6 border rounded-lg shadow-sm">
-          <p className="text-center text-gray-500">Formulario en construcción...</p>
+          <SimpleForm />
         </div>
       </div>
     </main>
