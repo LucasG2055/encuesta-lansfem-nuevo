@@ -21,8 +21,8 @@ function StarRating({ rating, onRatingChange }) {
           <span 
             className={`text-3xl ${
               star <= (hoverRating || rating) 
-                ? 'text-[#FFD700]' // Amarillo para estrellas seleccionadas
-                : 'text-gray-300'  // Gris para estrellas no seleccionadas
+                ? 'text-[#FFD700]' 
+                : 'text-gray-300'
             }`}
             style={{
               textShadow: star <= (hoverRating || rating) ? '0 0 1px #FFF5CC' : 'none'
@@ -149,4 +149,23 @@ export default function Home() {
         <div className="flex flex-col items-center mb-8">
           <Image
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Logo%20Lansfem-szRuYiZmi6gtJ36ABK4ktL6yQCxdeX.png"
-            alt="La
+            alt="Lansfem Logo"
+            width={200}
+            height={80}
+            className="mb-6"
+            priority
+            unoptimized={true}
+          />
+          <h1 className="text-3xl font-bold text-center mb-2 text-[#763eac]">Encuesta de Satisfacción</h1>
+          <p className="text-center text-gray-600 mb-8">
+            Por favor califique su experiencia con nuestras doctoras. Todas las respuestas son anónimas.
+          </p>
+        </div>
+        
+        <div className="p-6 border rounded-lg shadow-sm">
+          <SimpleForm />
+        </div>
+      </div>
+    </main>
+  );
+}
