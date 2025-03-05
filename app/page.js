@@ -1,51 +1,19 @@
 "use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation'; // Importa useRouter
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-// Componente de calificación con estrellas
-function StarRating({ rating, onRatingChange }) {
-  const [hoverRating, setHoverRating] = useState(0);
-  
-  return (
-    <div className="flex gap-1">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <button
-          key={star}
-          type="button"
-          className="focus:outline-none"
-          onClick={() => onRatingChange(star)}
-          onMouseEnter={() => setHoverRating(star)}
-          onMouseLeave={() => setHoverRating(0)}
-        >
-          <span 
-            className={`text-3xl ${
-              star <= (hoverRating || rating) 
-                ? 'text-[#FFD700]' 
-                : 'text-gray-300'
-            }`}
-            style={{
-              textShadow: star <= (hoverRating || rating) ? '0 0 1px #FFF5CC' : 'none'
-            }}
-          >
-            ★
-          </span>
-        </button>
-      ))}
-      <span className="ml-2 text-sm text-gray-500">
-        {rating > 0 ? `${rating} estrella${rating !== 1 ? 's' : ''}` : 'Sin calificación'}
-      </span>
-    </div>
-  );
-}
+import { StarRating } from '@/components/star-rating';
 
 // Componente de formulario simple
 function SimpleForm() {
+  const router = useRouter(); // Inicializa el router
   const [rating, setRating] = useState(0);
   const [doctor, setDoctor] = useState('');
   const [waitTime, setWaitTime] = useState('');
   const [comments, setComments] = useState('');
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -60,15 +28,22 @@ function SimpleForm() {
       return;
     }
     
-    // Aquí iría el código para enviar el formulario
-    alert(`Formulario enviado:\nDoctora: ${doctor}\nCalificación: ${rating}\nTiempo de espera: ${waitTime}\nComentarios: ${comments}`);
+    // Simulación de envío
+    setIsSubmitting(true);
     
-    // Reiniciar el formulario
-    setDoctor('');
-    setRating(0);
-    setWaitTime('');
-    setComments('');
-    setErrors({});
+    // Simulamos una petición a un servidor
+    setTimeout(() => {
+      console.log({
+        doctor,
+        rating,
+        waitTime,
+        comments
+      });
+      
+      // Redirigir a la página de agradecimiento
+      router.push('/gracias');
+      
+    }, 1000);
   };
   
   return (
@@ -78,10 +53,11 @@ function SimpleForm() {
         <label className="block text-sm font-medium">Doctora</label>
         <select 
           className={`w-full p-2 border rounded-md focus:ring-2 focus:ring-[#763eac] focus:border-[#763eac] ${
-            errors.doctor ? 'border-red-500' : ''
+            errors.doctor ? 'border-red-500' : 'border-gray-300'
           }`}
           value={doctor}
           onChange={(e) => setDoctor(e.target.value)}
+          disabled={isSubmitting}
         >
           <option value="" disabled>Seleccione una doctora</option>
           <option value="dra-daniela-sasiain">Dra. Daniela Sasiain</option>
@@ -96,7 +72,12 @@ function SimpleForm() {
       {/* Calificación con estrellas */}
       <div className="space-y-2">
         <label className="block text-sm font-medium">Experiencia General</label>
-        <StarRating rating={rating} onRatingChange={setRating} />
+        <StarRating 
+          value={rating} 
+          onChange={setRating} 
+          size={28}
+          className="py-2"
+        />
         <p className="text-sm text-gray-500">¿Cómo calificaría su experiencia general?</p>
         {errors.rating && <p className="text-sm text-red-500">{errors.rating}</p>}
       </div>
@@ -105,9 +86,10 @@ function SimpleForm() {
       <div className="space-y-2">
         <label className="block text-sm font-medium">Tiempo de Espera</label>
         <select 
-          className="w-full p-2 border rounded-md focus:ring-2 focus:ring-[#763eac] focus:border-[#763eac]"
+          className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[#763eac] focus:border-[#763eac]"
           value={waitTime}
           onChange={(e) => setWaitTime(e.target.value)}
+          disabled={isSubmitting}
         >
           <option value="" disabled>Seleccione tiempo de espera</option>
           <option value="menos-de-15">Menos de 15 minutos</option>
@@ -123,10 +105,11 @@ function SimpleForm() {
       <div className="space-y-2">
         <label className="block text-sm font-medium">Comentarios Adicionales</label>
         <textarea
-          className="w-full p-2 border rounded-md h-32 resize-none focus:ring-2 focus:ring-[#763eac] focus:border-[#763eac]"
+          className="w-full p-2 border border-gray-300 rounded-md h-32 resize-none focus:ring-2 focus:ring-[#763eac] focus:border-[#763eac]"
           placeholder="Por favor comparta cualquier comentario adicional sobre su experiencia"
           value={comments}
           onChange={(e) => setComments(e.target.value)}
+          disabled={isSubmitting}
         ></textarea>
         <p className="text-sm text-gray-500">Sus comentarios nos ayudan a mejorar nuestros servicios</p>
       </div>
@@ -134,9 +117,10 @@ function SimpleForm() {
       {/* Botón de envío */}
       <button
         type="submit"
-        className="w-full py-2 px-4 bg-[#763eac] text-white rounded-md hover:bg-[#662e9c] transition-colors"
+        className="w-full py-2 px-4 bg-[#763eac] text-white rounded-md hover:bg-[#662e9c] transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-[#763eac] disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={isSubmitting}
       >
-        Enviar Encuesta
+        {isSubmitting ? 'Enviando...' : 'Enviar Encuesta'}
       </button>
     </form>
   );
@@ -162,7 +146,7 @@ export default function Home() {
           </p>
         </div>
         
-        <div className="p-6 border rounded-lg shadow-sm">
+        <div className="p-6 border border-gray-200 rounded-lg shadow-sm bg-white">
           <SimpleForm />
         </div>
       </div>
